@@ -1,4 +1,4 @@
-const windowsUserdata = require('./windows.js');
+const { getUserData: windowsUserdata } = require('./windows.js');
 
 const map = {
   windows: windowsUserdata
