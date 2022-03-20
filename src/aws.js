@@ -3,36 +3,11 @@ const core = require('@actions/core');
 const config = require('./config');
 const gh = require('./gh');
 
-async function startEc2Instance(label) {
-  const ec2 = new AWS.EC2();
+const { getUserData } = require('./userdata');
 
-
-  const preMetadata = "<powershell>";
-
-  const scheduleEmergencyShutdown = "shutdown /s /t 5400"; // 1 hour and a half
-
-  const globalConfig = [
-    // Install choco
-    `Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))`,
-    // Install git
-    'choco install -y git',
-    // Add git to path
-    '$env:Path += ";C:\\Program Files\\Git\\cmd"',
-    // Enable fix for long > 260
-    'git config --system core.longpaths true',
-    // Download GitHub Runner temp dir
-    `mkdir C:\\TEMP; cd C:\\TEMP`,
-    // Download GitHub Runner
-     'Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.280.3/actions-runner-win-x64-2.280.3.zip -OutFile actions-runner-win-x64-2.280.3.zip',
-    // Check hash is good
-    'if((Get-FileHash -Path actions-runner-win-x64-2.280.3.zip -Algorithm SHA256).Hash.ToUpper() -ne \'d45e44d3266539c92293de235b6eea3cb2dc21fe3e5b98fbf3cfa97d38bdad9f\'.ToUpper()){ throw \'Computed checksum did not match\' }',
-  ]
-
-  const customConfigs = [];
-
+function createRegistrations(count, callback) {
   let latestToken = "None";
-  for (let i = 0; i < config.input.count; i++) {
-
+  return [... new Array(count).keys()].map(async (i) => {
     core.info("Generating user-data for runner id: " + i);
     let githubRegistrationToken = await gh.getRegistrationToken();
 
@@ -44,33 +19,14 @@ async function startEc2Instance(label) {
     latestToken = githubRegistrationToken;
 
     core.info("Latest token is: " + latestToken);
+    return callback(i, githubRegistrationToken);
+  });
+}
 
-    const customConfig = [
-      // Create runner dir
-      `mkdir C:\\runner-${i}; cd C:\\runner-${i}`,
-      // Extract runner .zip
-      'Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory("C:/TEMP/actions-runner-win-x64-2.280.3.zip", "$PWD")',
-      // Configure the runner for the current repo
-      `.\\config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --name ${label}-${i} --unattended`,
-      // Run it!
-      'start-process -Filepath run.cmd'
-    ];
+async function startEc2Instance(label) {
+  const ec2 = new AWS.EC2();
 
-    customConfigs.push(customConfig.join("\n"))
-  }
-
-  
-
-  const postMetadata = "</powershell>";
-
-
-  const vanillaAMIUserData = preMetadata + "\n" + scheduleEmergencyShutdown + "\n" + globalConfig.join("\n") + "\n" + customConfigs.join("\n") + "\n" + postMetadata;
-  core.info("UserData:");
-  core.info(vanillaAMIUserData);
-
-  const userDataBase64 = Buffer.from(vanillaAMIUserData).toString('base64');
-  // const userDataBase64 = Buffer.from(userData).toString('base64');
-
+  const userDataBase64 = getUserData(config.input.os, label, createRegistrations);
   core.info("UserData Base64:");
   core.info(userDataBase64);
 
@@ -84,7 +40,7 @@ async function startEc2Instance(label) {
     // SecurityGroupIds: [config.input.securityGroupId],
     IamInstanceProfile: { Name: config.input.iamRoleName },
     TagSpecifications: config.tagSpecifications,
-    KeyName: 'win',
+    KeyName: config.input.keyPair,
     NetworkInterfaces: [
       {
         AssociatePublicIpAddress: true,

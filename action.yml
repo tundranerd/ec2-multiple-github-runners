@@ -5,6 +5,13 @@ branding:
   icon: 'box'
   color: 'orange'
 inputs:
+  os:
+    description: >-
+      Specify here which os you want to use:
+        - 'linux' - Configure Linux Runner, Default Value .
+        - 'windows' - Configure Windows Runner;
+        - 'macos' - Configure MacOs Runner
+    required: true
   mode:
     description: >-
       Specify here which mode you want to use:
@@ -73,7 +80,11 @@ inputs:
   spawned-count:
     description: >-
       Spawned runners installed in the instance
-    required: false
+    required: true
+  key-pair:
+    description: >-
+      The AWS Key-pair name
+    required: true
 outputs:
   label:
     description: >-

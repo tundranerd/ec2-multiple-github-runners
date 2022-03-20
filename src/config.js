@@ -4,6 +4,8 @@ const github = require('@actions/github');
 class Config {
   constructor() {
     this.input = {
+      keyPair: core.getInput('key-pair'),
+      os: core.getInput('os') || 'linux',
       mode: core.getInput('mode'),
       githubToken: core.getInput('github-token'),
       // Start mode inputs
