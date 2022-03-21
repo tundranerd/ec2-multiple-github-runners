@@ -1,7 +1,9 @@
 const { getUserData: windowsUserdata } = require('./windows.js');
+const { getUserData: linuxUserdata } = require('./linux.js');
 
 const map = {
-  windows: windowsUserdata
+  windows: windowsUserdata,
+  linux: linuxUserdata
 }
 
 const getUserData = async (os, label, createRegistrations) => {
