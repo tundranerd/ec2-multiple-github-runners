@@ -14,7 +14,7 @@ class Config {
       subnetId: core.getInput('subnet-id'),
       securityGroupId: core.getInput('security-group-id'),
       iamRoleName: core.getInput('iam-role-name'),
-      count: parseInt(core.getInput('count')),
+      count: parseInt(core.getInput('count')) || 1,
       // Stop mode inputs
       ec2InstanceId: core.getInput('ec2-instance-id'),
       label: core.getInput('label'),

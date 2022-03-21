@@ -1,4 +1,5 @@
 const config = require('../config');
+const core = require('@actions/core');
  
 const preMetadata = "<powershell>";
 const scheduleEmergencyShutdown = "shutdown /s /t 5400"; // 1 hour and a half
@@ -33,28 +34,24 @@ function createRegistration(label, i, githubRegistrationToken) {
   ].join("\n");
 }
 
-  
 const postMetadata = "</powershell>";
 
-
-
-function getUserData(label, createRegistrations) {
-
+async function getUserData(label, createRegistrations) {
   const registrationCallback = (i, githubRegistrationToken) => {
     return createRegistration(label, i, githubRegistrationToken);
   };
 
-  const { input: { count } } = config;
-
-  const registrations = createRegistrations(count, registrationCallback).join("\n");
+  const registrations = await createRegistrations(config.input.count, registrationCallback)
 
   const vanillaAMIUserData = [
-     preMetadata,
-     scheduleEmergencyShutdown,
-     globalConfig,
-     registrations,
-     postMetadata
+    preMetadata,
+    scheduleEmergencyShutdown,
+    globalConfig,
+    registrations.join("\n"),
+    postMetadata
   ].join("\n");
+
+  core.debug(`AMI userdata: ${vanillaAMIUserData}`);
 
   return Buffer.from(vanillaAMIUserData).toString('base64');
 }

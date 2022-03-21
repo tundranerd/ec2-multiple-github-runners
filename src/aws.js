@@ -5,9 +5,10 @@ const gh = require('./gh');
 
 const { getUserData } = require('./userdata');
 
-function createRegistrations(count, callback) {
+async function createRegistrations(count, callback) {
   let latestToken = "None";
-  return [... new Array(count).keys()].map(async (i) => {
+  core.debug("Callback: " + callback);
+  const registrations = [... new Array(count).keys()].map(async (i) => {
     core.info("Generating user-data for runner id: " + i);
     let githubRegistrationToken = await gh.getRegistrationToken();
 
@@ -19,16 +20,17 @@ function createRegistrations(count, callback) {
     latestToken = githubRegistrationToken;
 
     core.info("Latest token is: " + latestToken);
-    return callback(i, githubRegistrationToken);
+    let registration = callback(i, githubRegistrationToken);
+    return registration;
   });
+
+  return await Promise.all(registrations);
 }
 
 async function startEc2Instance(label) {
   const ec2 = new AWS.EC2();
 
-  const userDataBase64 = getUserData(config.input.os, label, createRegistrations);
-  core.info("UserData Base64:");
-  core.info(userDataBase64);
+  const userDataBase64 = await getUserData(config.input.os, label, createRegistrations);
 
   const params = {
     ImageId: config.input.ec2ImageId,
