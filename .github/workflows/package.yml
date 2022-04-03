@@ -1,7 +1,6 @@
 on:
   push:
-    branches:
-      - main
+    branches: [ multi-os-multi-runner ]
 
 name: Package
 
@@ -12,8 +11,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          ref: main
       - name: Install packages
         run: npm ci
       - name: Run linter

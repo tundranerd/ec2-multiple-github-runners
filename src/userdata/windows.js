@@ -5,14 +5,6 @@ const preMetadata = "<powershell>";
 const scheduleEmergencyShutdown = "shutdown /s /t 5400"; // 1 hour and a half
 
 const globalConfig = [
-  // Install choco
-  `Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))`,
-  // Install git
-  'choco install -y git',
-  // Add git to path
-  '$env:Path += ";C:\\Program Files\\Git\\cmd"',
-  // Enable fix for long > 260
-  'git config --system core.longpaths true',
   // Download GitHub Runner temp dir
   `mkdir C:\\TEMP; cd C:\\TEMP`,
   // Download GitHub Runner
