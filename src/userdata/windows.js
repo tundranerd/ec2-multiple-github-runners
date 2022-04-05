@@ -20,7 +20,7 @@ function createRegistration(label, i, githubRegistrationToken) {
     // Extract runner .zip
     'Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory("C:/TEMP/actions-runner-win-x64-2.280.3.zip", "$PWD")',
     // Configure the runner for the current repo
-    `.\\config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label}-i --name ${label}-${i} --unattended`,
+    `.\\config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label}-${i} --name ${label}-${i} --unattended`,
     // Run it!
     'start-process -Filepath run.cmd'
   ].join("\n");
