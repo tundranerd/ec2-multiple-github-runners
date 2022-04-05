@@ -10,7 +10,10 @@ async function getRunner(label) {
 
   try {
     const runners = await octokit.paginate('GET /repos/{owner}/{repo}/actions/runners', config.githubContext);
+    console.info(runners[0]);
+    //_.filter(results.runners, { name: 'AWS-6473876346947296'   })
     const foundRunners = _.filter(runners, { labels: [{ name: label }] });
+    console.info(foundRunners);
     return foundRunners.length > 0 ? foundRunners[0] : null;
   } catch (error) {
     return null;
@@ -52,7 +55,7 @@ async function removeRunner(label) {
 }
 
 async function waitForRunnerRegistered(label) {
-  const timeoutMinutes = 5;
+  const timeoutMinutes = 1;
   const retryIntervalSeconds = 10;
   const quietPeriodSeconds = 30;
   let waitSeconds = 0;
