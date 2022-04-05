@@ -51,7 +51,7 @@ class Config {
         throw new Error(`Not all the required inputs are provided for the 'start' mode`);
       }
     } else if (this.input.mode === 'stop') {
-      if (!this.input.label || !this.input.ec2InstanceId || !this.input.spawnedCount) {
+      if (!this.input.label || !this.input.ec2InstanceId) {
         throw new Error(`Not all the required inputs are provided for the 'stop' mode`);
       }
     } else {
