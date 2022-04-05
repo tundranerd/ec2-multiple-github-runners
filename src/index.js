@@ -25,7 +25,7 @@ async function start() {
   await aws.waitForInstanceRunning(ec2InstanceId);
 
   core.info(`Startup Label: ${label}`);
-  await gh.waitForRunnerRegistered(`${runnerName}`);
+  await gh.waitForRunnerRegistered(`${label}`);
 }
 
 async function stop() {
