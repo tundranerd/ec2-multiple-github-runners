@@ -28,7 +28,7 @@ async function start(mode) {
   await gh.waitForRunnerRegistered(mode, label);
 }
 
-async function stop() {
+async function stop(mode) {
 
   // Stop the AWS EC2 machine
   await aws.terminateEc2Instance();
