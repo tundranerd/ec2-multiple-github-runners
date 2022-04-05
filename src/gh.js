@@ -54,7 +54,7 @@ async function removeRunner(label) {
   }
 }
 
-async function waitForRunnerRegistered(label) {
+async function waitForRunnerRegistered(mode, label) {
   const timeoutMinutes = 1;
   const retryIntervalSeconds = 10;
   const quietPeriodSeconds = 30;
@@ -74,7 +74,13 @@ async function waitForRunnerRegistered(label) {
         reject(`A timeout of ${timeoutMinutes} minutes is exceeded. Your AWS EC2 instance was not able to register itself in GitHub as a new self-hosted runner.`);
       }
 
-      if (runner && runner.status === 'online') {
+      if (mode === 'stop' && runner && runner.status == 'offline') {
+        core.info(`GitHub self-hosted runner ${runner.name} is registered and ready to stop`);
+        clearInterval(interval);
+        resolve();
+      }
+
+      if (mode === 'start' && runner && runner.status === 'online') {
         core.info(`GitHub self-hosted runner ${runner.name} is registered and ready to use`);
         clearInterval(interval);
         resolve();

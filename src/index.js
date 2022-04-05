@@ -5,7 +5,7 @@ const core = require('@actions/core');
 
 
 
-async function start() {
+async function start(mode) {
 
   // Generate random runner name
   const label = config.generateUniqueLabel();
@@ -25,7 +25,7 @@ async function start() {
   await aws.waitForInstanceRunning(ec2InstanceId);
 
   core.info(`Startup Label: ${label}`);
-  await gh.waitForRunnerRegistered(`${label}`);
+  await gh.waitForRunnerRegistered(mode, label);
 }
 
 async function stop() {
@@ -41,13 +41,14 @@ async function stop() {
 
   core.info(`Shutdown Label: ${label}`);
 
-  await gh.waitForRunnerRegistered(label);
+  await gh.waitForRunnerRegistered(mode, label);
   await gh.removeRunner(label);
 }
 
 (async function () {
   try {
-    config.input.mode === 'start' ? await start() : await stop();
+    const { mode } = config.input;
+    mode === 'start' ? await start(mode) : await stop(mode);
   } catch (error) {
     core.error(error);
     core.setFailed(error.message);
