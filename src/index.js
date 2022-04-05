@@ -26,12 +26,12 @@ async function start() {
   await aws.waitForInstanceRunning(ec2InstanceId);
 
   // Check there is at least 1 runner with the generated label
-  await gh.waitForRunnerRegistered(label);
-
   // Check all requested runners are ok
-  // for (let i = 0; i < count; i++) {
-  //   await gh.waitForRunnerRegistered(`${label}-${i}`);
-  // }
+  for (let i = 0; i < count; i++) {
+    const runnerName = `${label}-${i}`;
+    core.info(`Startup Label: ${runnerName}`);
+    await gh.waitForRunnerRegistered(`${runnerName}`);
+  }
 }
 
 async function stop() {
@@ -47,7 +47,8 @@ async function stop() {
 
   // De-register all the runners
   for (let i = 0; i < spawnedCount; i++) {
-    const runnerName = `${label}`;
+    const runnerName = `${label}-${i}`;
+    core.info(`--label ${runnerName}`);
     await gh.waitForRunnerRegistered(runnerName);
     await gh.removeRunner(runnerName);
   }
