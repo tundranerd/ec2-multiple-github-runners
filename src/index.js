@@ -41,8 +41,6 @@ async function stop() {
 
   await gh.waitForRunnerRegistered(label);
   await gh.removeRunner(label);
-  }
-
 }
 
 (async function () {
