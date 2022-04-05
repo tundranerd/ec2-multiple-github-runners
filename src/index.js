@@ -20,18 +20,12 @@ async function start() {
   // Set return values of the Action
   core.setOutput('label', label);
   core.setOutput('ec2-instance-id', ec2InstanceId);
-  core.setOutput('spawned-count', count);
 
   // Wait for the instance to boot up successfully
   await aws.waitForInstanceRunning(ec2InstanceId);
 
-  // Check there is at least 1 runner with the generated label
-  // Check all requested runners are ok
-  for (let i = 0; i < count; i++) {
-    const runnerName = `${label}-${i}`;
-    core.info(`Startup Label: ${runnerName}`);
-    await gh.waitForRunnerRegistered(`${runnerName}`);
-  }
+  core.info(`Startup Label: ${label}`);
+  await gh.waitForRunnerRegistered(`${runnerName}`);
 }
 
 async function stop() {
@@ -45,12 +39,8 @@ async function stop() {
   // Base label used by the previous machine
   const label = config.input.label;
 
-  // De-register all the runners
-  for (let i = 0; i < spawnedCount; i++) {
-    const runnerName = `${label}-${i}`;
-    core.info(`--label ${runnerName}`);
-    await gh.waitForRunnerRegistered(runnerName);
-    await gh.removeRunner(runnerName);
+  await gh.waitForRunnerRegistered(label);
+  await gh.removeRunner(label);
   }
 
 }

@@ -14,7 +14,6 @@ class Config {
       subnetId: core.getInput('subnet-id'),
       securityGroupId: core.getInput('security-group-id'),
       iamRoleName: core.getInput('iam-role-name'),
-      count: parseInt(core.getInput('count')) || 1,
       // Stop mode inputs
       ec2InstanceId: core.getInput('ec2-instance-id'),
       label: core.getInput('label'),
@@ -45,10 +44,6 @@ class Config {
 
     if (!this.input.githubToken) {
       throw new Error(`The 'github-token' input is not specified`);
-    }
-
-    if (!this.input.count > 0) {
-      throw new Error(`The 'count' can't be 0 or negative!`);
     }
 
     if (this.input.mode === 'start') {

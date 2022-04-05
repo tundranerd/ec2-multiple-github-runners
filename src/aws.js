@@ -5,10 +5,11 @@ const gh = require('./gh');
 
 const { getUserData } = require('./userdata');
 
-async function createRegistrations(count, callback) {
+async function createRegistrations(callback) {
   let latestToken = "None";
   core.debug("Callback: " + callback);
-  const registrations = [... new Array(count).keys()].map(async (i) => {
+  // Force only 1
+  const registrations = [... new Array(1).keys()].map(async (i) => {
     core.info("Generating user-data for runner id: " + i);
     let githubRegistrationToken = await gh.getRegistrationToken();
 
@@ -20,7 +21,7 @@ async function createRegistrations(count, callback) {
     latestToken = githubRegistrationToken;
 
     core.info("Latest token is: " + latestToken);
-    let registration = callback(i, githubRegistrationToken);
+    let registration = callback(githubRegistrationToken);
     return registration;
   });
 

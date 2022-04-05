@@ -13,14 +13,14 @@ const globalConfig = [
   'if((Get-FileHash -Path actions-runner-win-x64-2.280.3.zip -Algorithm SHA256).Hash.ToUpper() -ne \'d45e44d3266539c92293de235b6eea3cb2dc21fe3e5b98fbf3cfa97d38bdad9f\'.ToUpper()){ throw \'Computed checksum did not match\' }',
 ].join("\n");
 
-function createRegistration(label, i, githubRegistrationToken) {
+function createRegistration(label, githubRegistrationToken) {
   return [
     // Create runner dir
-    `mkdir C:\\runner-${i}; cd C:\\runner-${i}`,
+    `mkdir C:\\runner; cd C:\\runner`,
     // Extract runner .zip
     'Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory("C:/TEMP/actions-runner-win-x64-2.280.3.zip", "$PWD")',
     // Configure the runner for the current repo
-    `.\\config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label}-${i} --name ${label}-${i} --unattended`,
+    `.\\config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --name ${label} --unattended`,
     // Run it!
     'start-process -Filepath run.cmd'
   ].join("\n");
@@ -29,11 +29,11 @@ function createRegistration(label, i, githubRegistrationToken) {
 const postMetadata = "</powershell>";
 
 async function getUserData(label, createRegistrations) {
-  const registrationCallback = (i, githubRegistrationToken) => {
-    return createRegistration(label, i, githubRegistrationToken);
+  const registrationCallback = (githubRegistrationToken) => {
+    return createRegistration(label, githubRegistrationToken);
   };
 
-  const registrations = await createRegistrations(config.input.count, registrationCallback)
+  const registrations = await createRegistrations(registrationCallback)
 
   const vanillaAMIUserData = [
     preMetadata,
