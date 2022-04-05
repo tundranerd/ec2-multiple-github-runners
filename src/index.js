@@ -39,6 +39,8 @@ async function stop() {
   // Base label used by the previous machine
   const label = config.input.label;
 
+  core.info(`Shutdown Label: ${label}`);
+
   await gh.waitForRunnerRegistered(label);
   await gh.removeRunner(label);
 }
