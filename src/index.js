@@ -47,7 +47,7 @@ async function stop(mode) {
     await gh.waitForRunnerRegistered(mode, label, waitForDeRegistryTimeout);
     await gh.removeRunner(label);
   } catch(error) {
-    core.warn(error);
+    core.warning(error);
   }
 }
 
