@@ -25,7 +25,8 @@ async function start(mode) {
   await aws.waitForInstanceRunning(ec2InstanceId);
 
   core.info(`Startup Label: ${label}`);
-  await gh.waitForRunnerRegistered(mode, label);
+  const { waitForRegistryTimeout } = config.input;
+  await gh.waitForRunnerRegistered(mode, label, waitForRegistryTimeout);
 }
 
 async function stop(mode) {
@@ -42,11 +43,11 @@ async function stop(mode) {
   core.info(`Shutdown Label: ${label}`);
 
   try {
-    const timeout = 1; //Wait 1 minute and bailout
-    await gh.waitForRunnerRegistered(mode, label, timeout);
+    const { waitForDeRegistryTimeout } = config.input;
+    await gh.waitForRunnerRegistered(mode, label, waitForDeRegistryTimeout);
     await gh.removeRunner(label);
   } catch(error) {
-    core.warning(error);
+    core.warn(error);
   }
 }
 

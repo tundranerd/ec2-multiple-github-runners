@@ -76,6 +76,17 @@ inputs:
     description: >-
       The AWS Key-pair name
     required: true
+
+  wait-for-registry-timeout:
+    description: >-
+      Time in minutes process should wait for the runner registration
+    required: false
+
+  wait-for-deregistry-timeout:
+    description: >-
+      Time in minutes process should wait for the runner deregistration
+    required: false
+
 outputs:
   label:
     description: >-

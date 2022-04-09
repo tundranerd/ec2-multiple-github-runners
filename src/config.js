@@ -17,6 +17,10 @@ class Config {
       // Stop mode inputs
       ec2InstanceId: core.getInput('ec2-instance-id'),
       label: core.getInput('label'),
+      //Default to 5 minutes
+      waitForRegistryTimeout: parseInt(core.getInput('wait-for-registry-timeout')) || 5,
+      //Default to 1 minute
+      waitForDeRegistryTimeout: parseInt(core.getInput('wait-for-deregistry-timeout')) || 1,
       spawnedCount: parseInt(core.getInput('spawned-count')),
     };
 
