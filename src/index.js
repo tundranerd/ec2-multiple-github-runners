@@ -41,8 +41,13 @@ async function stop(mode) {
 
   core.info(`Shutdown Label: ${label}`);
 
-  await gh.waitForRunnerRegistered(mode, label);
-  await gh.removeRunner(label);
+  try {
+    const timeout = 1; //Wait 1 minute and bailout
+    await gh.waitForRunnerRegistered(mode, label, timeout);
+    await gh.removeRunner(label);
+  } catch(error) {
+    core.warning(error);
+  }
 }
 
 (async function () {
