@@ -14,17 +14,17 @@ function createRegistration(label, i, githubRegistrationToken) {
   return [
       `mkdir /tmp/runner-${i} && cd /tmp/runner-${i}`,
       `tar xzf /tmp/actions-runner-linux-\${RUNNER_ARCH}-2.286.0.tar.gz -C /tmp/runner-${i}`,
-      `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --name ${label}-${i} --unattended`,
+      `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --name ${label} --unattended`,
       './run.sh 2>&1 &'
   ].join("\n");
 }
 
 async function getUserData(label, createRegistrations) {
-  const registrationCallback = (i, githubRegistrationToken) => {
-    return createRegistration(label, i, githubRegistrationToken);
+  const registrationCallback = (githubRegistrationToken) => {
+    return createRegistration(label, githubRegistrationToken);
   };
 
-  const registrations = await createRegistrations(config.input.count, registrationCallback)
+  const registrations = await createRegistrations(registrationCallback)
 
   const vanillaAMIUserData = [
     globalConfig,
