@@ -11,9 +11,9 @@ async function getRunner(label) {
   try {
     const runners = await octokit.paginate('GET /repos/{owner}/{repo}/actions/runners', config.githubContext);
     const filter = { labels: [{ name: label }] };
-    core.info(`Looking for runners with filter: ${filter}`);
+    core.info(`Looking for runners with filter: ${JSON.stringify(filter)}`);
     const foundRunners = _.filter(runners, filter);
-    core.info(`Found runners: ${foundRunners}`);
+    core.info(`Found runners: ${JSON.stringify(foundRunners)}`);
     return foundRunners.length > 0 ? foundRunners[0] : null;
   } catch (error) {
     return null;
