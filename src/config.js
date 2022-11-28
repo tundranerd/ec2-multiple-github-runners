@@ -22,6 +22,7 @@ class Config {
       //Default to 1 minute
       waitForDeRegistryTimeout: parseInt(core.getInput('wait-for-deregistry-timeout')) || 1,
       spawnedCount: parseInt(core.getInput('spawned-count')),
+      availabilityZone: core.getInput('availability-zone'),
     };
 
     const tags = JSON.parse(core.getInput('aws-resource-tags'));

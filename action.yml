@@ -32,6 +32,10 @@ inputs:
       EC2 Instance Type. 
       This input is required if you use the 'start' mode.
     required: false
+  availability-zone:
+    description: 'Availability zone (us-east-1a)'
+    required: false
+    default: 'us-east-1a'
   subnet-id:
     description: >-
       VPC Subnet Id. The subnet should belong to the same VPC as the specified security group.

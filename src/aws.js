@@ -53,6 +53,11 @@ async function startEc2Instance(label) {
         Groups: [config.input.securityGroupId]
       }
     ],
+
+    Placement: {
+      AvailabilityZone: config.input.availabilityZone,
+    },
+
     BlockDeviceMappings: [
       {
         DeviceName: '/dev/sda1',
