@@ -12,7 +12,7 @@ const globalConfig = [
 function createRegistration(label, githubRegistrationToken) {
   return [
       'mkdir -p /tmp/runner && cd /tmp/runner',
-      `tar xzf /tmp/actions-runner-linux-\${RUNNER_ARCH}-2.286.0.tar.gz -C /tmp/runner`,
+      `tar xzf /tmp/actions-runner-linux-\${RUNNER_ARCH}-2.304.0.tar.gz -C /tmp/runner`,
       'export RUNNER_ALLOW_RUNASROOT=1',
       `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --name ${label} --unattended`,
       './run.sh 2>&1 &'
