@@ -1,6 +1,6 @@
 const config = require('../config');
 const core = require('@actions/core');
- 
+
 const preMetadata = "<powershell>";
 const scheduleEmergencyShutdown = "shutdown /s /t 5400"; // 1 hour and a half
 
@@ -8,7 +8,7 @@ const globalConfig = [
   // Download GitHub Runner temp dir
   `mkdir C:\\TEMP; cd C:\\TEMP`,
   // Download GitHub Runner
-  'Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.280.3/actions-runner-win-x64-2.280.3.zip -OutFile actions-runner-win-x64-2.280.3.zip',
+  'Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.304.0/actions-runner-win-x64-2.304.0.zip -OutFile actions-runner-win-x64-2.304.0.zip',
   // Check hash is good
   'if((Get-FileHash -Path actions-runner-win-x64-2.280.3.zip -Algorithm SHA256).Hash.ToUpper() -ne \'d45e44d3266539c92293de235b6eea3cb2dc21fe3e5b98fbf3cfa97d38bdad9f\'.ToUpper()){ throw \'Computed checksum did not match\' }',
 ].join("\n");

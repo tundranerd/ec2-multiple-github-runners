@@ -6,7 +6,7 @@ const globalConfig = [
       'apt-get update && apt-get install libicu60 -y',
       'mkdir -p /tmp && cd /tmp',
       'case $(uname -m) in aarch64) ARCH="arm64" ;; amd64|x86_64) ARCH="x64" ;; esac && export RUNNER_ARCH=${ARCH}',
-      'curl -O -L https://github.com/actions/runner/releases/download/v2.286.0/actions-runner-linux-${RUNNER_ARCH}-2.286.0.tar.gz',
+      'curl -O -L https://github.com/actions/runner/releases/download/v2.304.0/actions-runner-linux-${RUNNER_ARCH}-2.304.0.tar.gz',
 ].join("\n");
 
 function createRegistration(label, githubRegistrationToken) {
