@@ -43,6 +43,8 @@ class Config {
     // validate input
     //
 
+    this.input.os = this.input.os.toLowerCase();
+
     if (!this.input.mode) {
       throw new Error(`The 'mode' input is not specified`);
     }
