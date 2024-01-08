@@ -6,7 +6,7 @@ const scheduleEmergencyShutdown = "shutdown /s /t 5400"; // 1 hour and a half
 
 const globalConfig = [
   // Create runner dir
-  'mkdir C:\\actions-runner; cd C:\\actions-runner,
+  'mkdir C:\\actions-runner; cd C:\\actions-runner',
   // Download GitHub Runner
   'Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.311.0/actions-runner-win-x64-2.311.0.zip -OutFile actions-runner-win-x64-2.311.0.zip',
   // Check hash is good
@@ -18,7 +18,7 @@ function createRegistration(label, githubRegistrationToken) {
     // Extract runner .zip
     'Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory("$PWD/actions-runner-win-x64-2.311.0.zip", "$PWD")',
     // Configure the runner for the current repo
-    `.\\config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --name ${label} --unattended`,
+    `.\\config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --name ${label} --unattended  --disableupdate`,
     // Run it!
     'start-process -Filepath run.cmd'
   ].join("\n");

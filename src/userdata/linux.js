@@ -14,7 +14,7 @@ function createRegistration(label, githubRegistrationToken) {
       'mkdir -p /tmp/runner && cd /tmp/runner',
       `tar xzf /tmp/actions-runner-linux-\${RUNNER_ARCH}-2.304.0.tar.gz -C /tmp/runner`,
       'export RUNNER_ALLOW_RUNASROOT=1',
-      `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --name ${label} --unattended`,
+      `./config.sh --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --name ${label} --unattended  --disableupdate`,
       './run.sh 2>&1 &'
   ].join("\n");
 }
