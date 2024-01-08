@@ -5,20 +5,18 @@ const preMetadata = "<powershell>";
 const scheduleEmergencyShutdown = "shutdown /s /t 5400"; // 1 hour and a half
 
 const globalConfig = [
-  // Download GitHub Runner temp dir
-  `mkdir C:\\TEMP; cd C:\\TEMP`,
+  // Create runner dir
+  'mkdir C:\\actions-runner; cd C:\\actions-runner,
   // Download GitHub Runner
-  'Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.304.0/actions-runner-win-x64-2.304.0.zip -OutFile actions-runner-win-x64-2.304.0.zip',
+  'Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.311.0/actions-runner-win-x64-2.311.0.zip -OutFile actions-runner-win-x64-2.311.0.zip',
   // Check hash is good
-  'if((Get-FileHash -Path actions-runner-win-x64-2.304.0.zip -Algorithm SHA256).Hash.ToUpper() -ne \'fbbddd2f94b195dde46aa6028acfe873351964c502aa9f29bb64e529b789500b\'.ToUpper()){ throw \'Computed checksum did not match\' }',
+  'if((Get-FileHash -Path actions-runner-win-x64-2.311.0.zip -Algorithm SHA256).Hash.ToUpper() -ne \'e629628ce25c1a7032d845f12dfe3dced630ca13a878b037dde77f5683b039dd\'.ToUpper()){ throw \'Computed checksum did not match\' }',
 ].join("\n");
 
 function createRegistration(label, githubRegistrationToken) {
   return [
-    // Create runner dir
-    `mkdir C:\\runner; cd C:\\runner`,
     // Extract runner .zip
-    'Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory("C:/TEMP/actions-runner-win-x64-2.304.0.zip", "$PWD")',
+    'Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory("$PWD/actions-runner-win-x64-2.311.0.zip", "$PWD")',
     // Configure the runner for the current repo
     `.\\config.cmd --url https://github.com/${config.githubContext.owner}/${config.githubContext.repo} --token ${githubRegistrationToken} --labels ${label} --name ${label} --unattended`,
     // Run it!
