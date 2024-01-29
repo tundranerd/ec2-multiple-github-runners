@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk');
+const { EC2, waitUntilInstanceRunning } = require('@aws-sdk/client-ec2');
 const core = require('@actions/core');
 const config = require('./config');
 const gh = require('./gh');
@@ -29,7 +29,7 @@ async function createRegistrations(callback) {
 }
 
 async function startEc2Instance(label) {
-  const ec2 = new AWS.EC2();
+  const ec2 = new EC2();
 
   const userDataBase64 = await getUserData(config.input.os, label, createRegistrations);
 
@@ -72,7 +72,7 @@ async function startEc2Instance(label) {
   };
 
   try {
-    const result = await ec2.runInstances(params).promise();
+    const result = await ec2.runInstances(params);
     const ec2InstanceId = result.Instances[0].InstanceId;
     core.info(`AWS EC2 instance ${ec2InstanceId} is started`);
     return ec2InstanceId;
@@ -83,14 +83,14 @@ async function startEc2Instance(label) {
 }
 
 async function terminateEc2Instance() {
-  const ec2 = new AWS.EC2();
+  const ec2 = new EC2();
 
   const params = {
     InstanceIds: [config.input.ec2InstanceId],
   };
 
   try {
-    await ec2.terminateInstances(params).promise();
+    await ec2.terminateInstances(params);
     core.info(`AWS EC2 instance ${config.input.ec2InstanceId} is terminated`);
     return;
   } catch (error) {
@@ -100,14 +100,17 @@ async function terminateEc2Instance() {
 }
 
 async function waitForInstanceRunning(ec2InstanceId) {
-  const ec2 = new AWS.EC2();
+  const ec2 = new EC2();
 
   const params = {
     InstanceIds: [ec2InstanceId],
   };
 
   try {
-    await ec2.waitFor('instanceRunning', params).promise();
+    await waitUntilInstanceRunning({
+      client: ec2,
+      maxWaitTime: 200,
+    }, params);
     core.info(`AWS EC2 instance ${ec2InstanceId} is up and running`);
     return;
   } catch (error) {
